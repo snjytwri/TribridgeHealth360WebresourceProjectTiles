@@ -1,0 +1,380 @@
+﻿html, body, #content {
+    height: 98%;
+}
+
+body {
+    margin: 3px;
+    border: 0px;
+    background-color: White;
+    font-family: Segoe UI,Tahoma,Arial;
+    font-size: 14px;
+}
+
+table {
+    cursor: default;
+}
+
+.headerMain {
+    font-size: 26px;
+    color: Gray;
+    text-align: center;
+}
+
+.sectionHeader {
+    font-size: 18px;
+    color: Gray;
+    text-align: left;
+    background-color: #E2E2E2;
+    height: 26px;
+    padding-left: 10px;
+    padding-top: 4px;
+}
+
+.fieldHeader {
+    font-size: 14px;
+    color: Gray;
+    text-align: left;
+    padding-left: 5px;
+}
+
+    .fieldHeader:hover {
+        background-color: #FFFFFF;
+        color: #990033;
+        font-size: 14px;
+    }
+
+.dataDisplay {
+    font-size: 16px;
+    color: Black;
+    padding-top: 3px;
+    padding-left: 5px;
+    padding-bottom: 3px;
+    text-align: left;
+}
+
+.qr-section {
+    display: inline-block;
+    margin: 17px;
+}
+
+.k-grid {
+    width: 98%;
+    height: 100%;
+    margin: 5px auto;
+    padding: 2px 2px 0 2px;
+    font-size: 14px;
+}
+
+/* Add a the bottom border to the cells */
+.k-grid-content table tr td {
+    border-width: 0 0 1px 1px;
+}
+
+.k-loading-text {
+    text-indent: 0 !important;
+}
+
+/* Modify loading mask according to the solution for crm*/
+.k-loading-mask {
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+.k-grid p {
+    margin-left: 5px;
+    float: left;
+    display: inline-block;
+}
+
+.openArrow {
+    background: transparent url('../img/crmicons/grid_ctrl_imgs.png') no-repeat scroll -79px -48px;
+    width: 19px;
+    height: 22px;
+    float: right;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.k-grid .k-dropdown, .k-grid .k-combobox {
+    width: 350px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+.k-grid .k-state-selected > td {
+    border: 0 !important;
+}
+
+.k-grid-content table tr {
+    color: #444444;
+    background-color: white;
+}
+
+
+    .k-grid-content table tr:hover {
+        background-color: rgb(215,235,249) !important;
+    }
+
+    .k-grid-content table tr td {
+        border-width: 0;
+    }
+
+.k-grid table {
+    cursor: default;
+    border-color: #d6d6d6 !important;
+    width: 100% !important;
+}
+
+.k-grid .k-state-selected {
+    background-color: #B1D6F0 !important;
+}
+
+.k-grid .k-state-focused {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.k-grid table .k-link {
+    color: #666666;
+    cursor: default;
+    font-size: 11px;
+}
+
+.k-grid table .k-header {
+    color: #666666;
+    background-color: white !important;
+}
+
+.k-grid table tr td a {
+    color: black;
+    cursor: default;
+    font-size: 11px;
+    text-decoration: none;
+}
+
+    .k-grid table tr td a:hover {
+        text-decoration: underline;
+    }
+
+.k-grid p.bold {
+    display: inline-block;
+    font-weight: bold;
+    color: black;
+}
+
+span.icon {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    margin-right: 5px;
+    background-repeat: no-repeat;
+}
+
+.k-grid table tr:hover span.icon_selected {
+    width: 12px !important;
+    height: 10px !important;
+    background: transparent url('../img/crmicons/grid_ctrl_imgs.png') no-repeat scroll -169px -37px;
+}
+
+.k-grid .k-state-selected td span.icon_selected {
+    width: 12px !important;
+    height: 10px !important;
+    background: transparent url('../img/crmicons/grid_ctrl_imgs.png') no-repeat scroll -169px -49px;
+}
+
+.k-grid table span.icon_selected_h {
+    width: 12px !important;
+    height: 10px !important;
+    background: transparent url('../img/crmicons/grid_ctrl_imgs.png') no-repeat scroll -169px -49px;
+}
+
+.k-grid td, .k-grid th {
+    font-size: 14px !important;
+}
+
+.k-menu {
+    display: block;
+    background-image: none !important;
+    background-color: none !important;
+    border: 0;
+    height: 0;
+    width: 0;
+    position: absolute;
+    margin-right: 21px;
+    z-index: 100;
+}
+
+.k-grid-header .k-header {
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+.k-grid-header-wrap th { 
+   font-size: 14px !important; 
+}
+
+.k-menu .k-i-arrow-s {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+.k-widget.k-menu-horizontal > .k-item {
+    border-right: 0;
+}
+
+.k-menu .k-item > .k-link > .k-i-arrow-e {
+    right: 0px;
+}
+
+.firstItem {
+    border-top: 1px solid #c6c6c6 !important;
+}
+
+
+#gridviews .mitem li:hover {
+    background-color: black !important;
+}
+
+#lookupWindow {
+    display: none;
+    padding-top: 10px;
+}
+
+    #lookupWindow .form {
+        margin: 0 auto;
+    }
+
+    #lookupWindow .tooolbar-bottom {
+        float: right;
+        margin-bottom: 5px;
+    }
+
+        #lookupWindow .tooolbar-bottom button {
+            margin-left: 5px;
+        }
+
+    #lookupWindow label {
+        width: 100px;
+        display: inline-block;
+    }
+
+    #lookupWindow .k-dropdown,
+    #lookupWindow .k-combobox {
+        width: 250px;
+    }
+
+
+.btn {
+    display: inline-block;
+    padding: 0px 5px 0px 0px;
+    margin-bottom: 0;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.428571429;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    height: 28px;
+    /*border-radius: 4px;*/
+}
+
+    .btn:focus {
+        outline: thin dotted;
+        outline: 5px auto -webkit-focus-ring-color;
+        outline-offset: -2px;
+    }
+
+    .btn:hover,
+    .btn:focus {
+        color: #333;
+        text-decoration: none;
+    }
+
+    .btn:active,
+    .btn.active {
+        background-image: none;
+        outline: 0;
+        -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+        box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+    }
+
+    .btn.disabled,
+    .btn[disabled],
+    fieldset[disabled] .btn {
+        pointer-events: none;
+        cursor: not-allowed;
+        filter: alpha(opacity=65);
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        opacity: .65;
+    }
+
+.btn-crm {
+    color: #333;
+    background-color: #fff;
+}
+
+    .btn-crm:hover,
+    .btn-crm:focus,
+    .btn-crm:active,
+    .btn-crm.active,
+    .open .dropdown-toggle.btn-crm {
+        color: #333;
+        background-color: #D7EBF9;
+    }
+
+    .btn-crm:active,
+    .btn-crm.active,
+    .open .dropdown-toggle.btn-crm {
+        background-image: none;
+    }
+
+    .btn-crm.disabled,
+    .btn-crm[disabled],
+    fieldset[disabled] .btn-crm,
+    .btn-crm.disabled:hover,
+    .btn-crm[disabled]:hover,
+    fieldset[disabled] .btn-crm:hover,
+    .btn-crm.disabled:focus,
+    .btn-crm[disabled]:focus,
+    fieldset[disabled] .btn-crm:focus,
+    .btn-crm.disabled:active,
+    .btn-crm[disabled]:active,
+    fieldset[disabled] .btn-crm:active,
+    .btn-crm.disabled.active,
+    .btn-crm[disabled].active,
+    fieldset[disabled] .btn-crm.active {
+        background-color: #fff;
+        border-color: #ccc;
+    }
+
+    .btn-crm .badge {
+        color: #fff;
+        background-color: #333;
+    }
+
+.btnNew {
+    background: transparent url('/_imgs/imagestrips/ribbonhomepage.png') no-repeat scroll -145px -531px;
+    width: 16px;
+    height: 16px;
+    overflow: hidden;
+    margin-right: 5px;
+}
+
+.btnSave {
+    background: transparent url('/_imgs/imagestrips/ribbonhomepage.png?ver=-1505771714') no-repeat scroll -289px -533px;
+    min-width: 20px !important;
+}

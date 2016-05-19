@@ -1,0 +1,123 @@
+﻿        #ProtocolsGrid__ {
+            padding: 10px 5px;
+            margin-bottom: -1px;
+        }
+        #ProtocolsDef {
+            padding: 10px 5px;
+            margin-bottom: -1px;
+        }
+        #Questions {
+            padding: 10px 5px;
+            margin-bottom: -1px;
+        }
+        #AdviceView {
+            padding: 10px 5px;
+            margin-bottom: -1px;
+        }
+        #SelectedAdvice {
+            padding: 10px 5px;
+            margin-bottom: -1px;
+        }
+        .buttonrow {
+            margin-top: 10px;
+            margin-left: 2px;
+        }
+        .search {
+            margin: 0 8px;
+            padding: 0;
+        }
+        .protocol {
+            float: left;
+            position: relative;
+            width: 400px;
+            height: 570px;
+            margin-left: 0px;
+            padding: 0;
+        }
+        .protocol2 {
+            float: left;
+            position: relative;
+            width: 400px;
+            height: 570px;
+            margin-left: 0px;
+            padding: 0;
+            font-family: Tahoma;
+            font-size: 14px;
+        }
+        .definition {
+            float: left;
+            position: relative;
+            width: 420px;
+            height: 550px;
+            margin-left: 0px;
+            padding: 0;
+        }
+        .protocolhdr {
+            float: left;
+            position: relative;
+            width: 430px;
+            height: 140px;
+            margin-left: 0px;
+            padding: 0;
+        }
+        .definition2 {
+            float: left;
+            position: relative;
+            width: 420px;
+            height: 410px;
+            margin-left: 0px;
+            padding: 0;
+        }
+        .questions {
+            float: left;
+            position: relative;
+            width: 825px;
+            height: 550px;
+            margin: 0 5px;
+            padding: 0;
+        }
+        .questions2 {
+            float: left;
+            position: relative;
+            width: 825px;
+            height: 550px;
+            margin: 0 5px;
+            padding: 0;
+        }
+        .adviceview {
+            float: left;
+            position: relative;
+            width: 350px;
+            height: 550px;
+            margin: 0 5px;
+            padding: 0;
+        }
+        .adviceview2 {
+            float: left;
+            position: relative;
+            width: 350px;
+            height: 550px;
+            margin: 0 5px;
+            padding: 0;
+        }
+        .selectedadvice {
+            float: left;
+            position: relative;
+            width: 400px;
+            height: 550px;
+            margin: 0 5px;
+            padding: 0;
+        }
+        .selectedadvice2 {
+            float: left;
+            position: relative;
+            width: 400px;
+            height: 550px;
+            margin: 0 5px;
+            padding: 0;
+        }
+        .radiogrp {
+            font-family: Tahoma;
+            font-size: 10px;
+        }
+

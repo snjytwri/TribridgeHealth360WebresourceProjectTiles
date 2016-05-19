@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <!--<link href="../tri_css/jquery_ui_192.custom.css" rel="stylesheet"/>-->
+    <script src="../tri_scripts/jquery.min.js" type="text/javascript"> </script>
+    <script src="../tri_scripts/jquery.knob.min.js" type="text/javascript"></script>	
+    <script src="../ClientGlobalContext.js.aspx" type="text/javascript"></script>
+    <!--<script src="../tri_scripts/jquery_ui_192.custom.js" type="text/javascript"></script>-->
+      
+         <script type="text/javascript">
+             
+         $(document).ready(function () {
+
+             var getProgress = parent.Xrm.Page.data.entity.attributes.get("new_bundledaysin").getValue();
+             var getBdlStatus = 0;
+
+             switch (parent.Xrm.Page.data.entity.attributes.get("new_bundlestatus").getValue()) {
+                 case 100000000:
+                     getBdlStatus = 30;
+                     break;
+                 case 100000001:
+                     getBdlStatus = 60;
+                     break;
+                 case 100000002:
+                     getBdlStatus = 90;
+                     break;
+                 case 100000003:
+                     getBdlStatus = 30;
+                     break;
+                 case 100000004:
+                     getBdlStatus = 60;
+                     break;
+                 case 100000005:
+                     getBdlStatus = 90;
+                     break;
+                
+             }
+
+             //var progPerc = Math.round(getProgress / getBdlStatus * 100);
+             var progPerc = Math.round(getBdlStatus - getProgress);
+             if (progPerc < 0)
+                 procPerc = 0;
+
+             $('.dial').val(progPerc);
+
+             $('.dial').knob({
+                 'min': 0,
+                 'max': getBdlStatus,
+                 'format': function (value) {
+                     return value + 'd';
+                 }
+             });
+                   
+
+
+            
+         });
+
+    </script>
+
+     <style>
+            body{
+              padding: 0;
+              margin: 0px 0px;
+              font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+              font-weight: 100;
+              text-rendering: optimizelegibility;
+            }
+            p{font-size: 15px; line-height: 15px}
+            div.demo{text-align: center; width: 280px; float: left}
+            div.demo > p{font-size: 15px}
+
+        
+        </style>
+</head>
+<body>
+   
+    <div id="Bundle">
+       <span><input class="dial" data-width="72"   data-fgcolor="#66CC66"  data-linecap="round" data-thickness=".15"  data-readonly="true" data-displayinput="true" /></span>
+        <!--<p style="font-size: 10px;line-height:5px">Bundle Progress</p>-->
+  </div>
+    
+    
+</body>
+</html>

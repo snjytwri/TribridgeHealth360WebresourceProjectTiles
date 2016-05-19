@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="css/kendo.common.min.css" type="text/css" />
+    <link rel="stylesheet" href="css/kendo.rtl.min.css" type="text/css" />
+    <link rel="stylesheet" href="css/kendo.silver.min.css" type="text/css" />
+    <link rel="stylesheet" href="css/kendo.silver.mobile.min" type="text/css" />
+    <link rel="stylesheet" href="css/kendo.dataviz.min.css" type="text/css" />
+    <link rel="stylesheet" href="css/kendo.dataviz.silver.min.css" type="text/css" />
+    <link rel="stylesheet" href="css/common.css" type="text/css" />
+    <link rel="stylesheet" href="css/main.css" type="text/css" />
+    <link rel="stylesheet" href="css/protocol.css" type="text/css" />
+
+    <script src="js/jquery.js" type="text/javascript"></script>
+    <script src="js/kendo.js" type="text/javascript"></script>
+    <script src="js/tribridge.crmsdk.js" type="text/javascript"></script>
+    <script src="js/tribridge.crmsdk.metadata.js" type="text/javascript"></script>
+    <script src="js/tribridge.helper.js" type="text/javascript"></script>
+    <script src="js/tribridge.functions.js" type="text/javascript"></script>
+    <script src="js/tribridge.CRUD.js" type="text/javascript"></script>
+    <script src="js/kendo.protocol.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../../ClientGlobalContext.js.aspx"></script>
+    <meta charset="utf-8">
+</head>
+<body>
+
+   <script id="QuestionTemplate" type="text/x-kendo-template">
+      <div>
+      <table style="width:100%;" border="0">
+      <tbody>
+      <tr>
+      # if (tri_colorhex != "") { #
+         <td style='width:65%; vertical-align:top; font-weight:bold; font-size:16px; color:#:tri_textcolorhex#; background-color:#:tri_colorhex#; border-style:none'>
+      # } else { #
+         <td style='width:65%; vertical-align:top; font-size:14px; border-style:none'>
+      #}#
+         <label id='tri_question'>#=tri_question#</label>
+      </td>
+      # if (tri_colorhex != "") { #
+         <td style="font-weight:normal; font-size:14px; border-style:none">
+            <input type="button" name="#=tri_levelid#-#=tri_questionorder#" onclick="Tribridge.Protocol.NoToAllOnClick(this,this.name);" value="No To All" style="border-style:solid; border-width:1px"/>
+         </td>
+      # } else { #
+         <td style='vertical-align:top; font-size:14px'>
+            <input type="radio" name="#=tri_ah_questionid#::#:tri_dispositionid#" id="#=tri_levelid#-#=tri_questionorder#-a" value="Y">Yes</input>
+            <input type="radio" name="#=tri_ah_questionid#::#:tri_dispositionid#" id="#=tri_levelid#-#=tri_questionorder#-b" value="N">No</input>
+            <input type="radio" name="#=tri_ah_questionid#::#:tri_dispositionid#" id="#=tri_levelid#-#=tri_questionorder#-c" value="NA">N/A</input>
+            &nbsp;&nbsp;&nbsp;
+            <input type="text" maxlength="200" style="width:120px" name="txt::#=tri_ah_questionid#::#=tri_dispositionid#" id="txt-#=tri_levelid#-#=tri_questionorder#" />
+         </td>
+      #}#
+      </tr>
+      <tr>
+      <td colspan="2">
+         <label id='tri_ah_questionid' style='visibility:hidden'>#:tri_ah_questionid#</label>
+         <label id='tri_dispositionid' style='visibility:hidden'>#:tri_dispositionid#</label>
+      </td>
+      </tr>
+      </tbody>
+      </table>
+      </div>
+   </script>
+
+
+   <div id="DivMain" style="width:843px; font-family:Tahoma; font-size:14px">
+
+      <!-- ----------------------------------------- -->
+      <!-- Define the div for the first form section -->
+      <!-- ----------------------------------------- -->
+      <div id="section1" style="visibility:visible; width:inherit">
+         
+         <div id="Search" class="search">
+            <label for="searchstring">Keyword Search:</label>
+            <input id="searchstring" value="" />
+            <button id="searchbutton">Search</button>
+         </div>
+         <div id="Protocols">
+            <table>
+               <tr>
+                  <td style="">
+                     <div id="ProtocolsGrid" class="protocol2"></div>
+                  </td>
+                  <td>
+                     <div id="ProtocolsDef" class="definition2"></div>
+                  </td>
+               </tr>
+            </table>
+         </div>
+
+         <!-- Div for the Prev/Next buttons -->
+         <div style="text-align:right; width:inherit">
+            <table border="0" style="width:inherit">
+               <tr>
+                  <td>
+                     <button id="buttonnext1">Next</button>
+                  </td>
+               </tr>
+            </table>
+
+         </div>
+      </div>
+
+      <!-- ------------------------------------------ -->
+      <!-- Define the div for the second form section -->
+      <!-- ------------------------------------------ -->
+      <div id="section2" style="visibility:visible; width:inherit">
+
+         <!-- Div for the Heading -->
+         <div id="divsection2heading" style="width:inherit">
+            <table style="width:inherit;  background-color:lightgray; padding:0px 0px 0px 0px" border="0">
+               <tr style="height:14px">
+                  <td style="text-align:center; font-size:14px">
+                     <b>
+                     <label id="HeadingText2">Selected Protocol</label>
+                     </b>
+                  </td>
+               </tr>
+            </table>
+         </div>
+         <!-- Div for the spacer -->
+         <div style="width:inherit">
+            <table>
+               <tr>
+                  <td>
+                     &nbsp;
+                  </td>
+               </tr>
+            </table>
+         </div>
+         <!-- Div for the Questions Listview -->
+         <div id="Questions" class="questions2" style="overflow:auto"></div>
+
+         <!-- Div for the Prev/Next buttons -->
+         <div id="buttons2" style="width:inherit; border:none;" class="buttonrow">
+            <table border="0" style="width:inherit" >
+               <tr>
+                  <td>
+                     <div style="text-align:left">
+                        <button id="buttonprev2">Previous</button>
+                     </div>
+                  </td>
+                  <td>
+                     <div style="text-align:right">
+                        <button id="buttonnext2">Next</button>
+                     </div>
+                  </td>
+               </tr>
+            </table>
+         </div>
+
+      </div>
+
+      <!-- ----------------------------------------- -->
+      <!-- Define the div for the third form section -->
+      <!-- ----------------------------------------- -->
+      <div id="section3" style="visibility:visible; width:inherit">
+
+         <!-- Div for the Heading -->
+         <div id="divsection3heading" style="width:inherit; ">
+            <table style="width:inherit;  background-color:lightgray; padding:0px 0px 0px 0px" border="0">
+               <tr style="height:14px">
+                  <td style="text-align:center; font-size:14px">
+                     <b>
+                     <label id="HeadingText3">Selected Protocol</label>
+                     </b>
+                  </td>
+               </tr>
+            </table>
+         </div>
+         <!-- Div for the spacer -->
+         <div style="width:inherit">
+            <table>
+               <tr>
+                  <td>
+                     &nbsp;
+                  </td>
+               </tr>
+            </table>
+         </div>
+         <!-- Div for the 2 listview controls -->
+         <div id="Advice">
+            <table>
+               <tr>
+                  <td>
+                     <div id="AdviceView" class="adviceview2" style="overflow:auto"></div>
+                  </td>
+                  <td>
+                     <div id="divspace">
+                        <button id="buttonmove">Add >>></button>
+                     </div>
+                  </td>
+                  <td>
+                     <div id="SelectedAdvice" class="selectedadvice2" style="overflow:auto"></div>
+                  </td>
+               </tr>
+            </table>
+         </div>
+         <!-- Div for the Prev/Done buttons -->
+         <div id="Div1" style="width:inherit; border:none">
+            <table border="0" style="width:inherit">
+               <tr>
+                  <td>
+                     <div style="text-align:left">
+                        <button id="buttonprev3">Previous</button>
+                     </div>
+                  </td>
+                  <td>
+                     <div style="text-align:right">
+                        <button id="buttonnext3">Done</button>
+                     </div>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+
+      <!-- Hidden div for the save status message -->
+      <div id="divStatus" style="border-style:inset; border-width:1px; visibility:hidden; position:absolute; z-index:100; background-color:#ffffff; top:290px; left:290px; width:200px; height:100px; margin: 0px 0px 0px 0px">
+         <table style="height:inherit; width:inherit; border:none">
+            <tr style="width:inherit">
+               <td style='width:inherit; text-align:center; vertical-align:middle; font-weight:normal; font-family:Tahoma; font-size:14px; color:blue;'>
+                  <label id="lblSuccessStatus" style="">Record Saved</label>
+               </td>
+            </tr>
+         </table>
+      </div>
+
+   </div>
+
+    <script type="text/javascript">
+
+      $(document).ready(function () {
+         Tribridge.Protocol.InitializeFormAdvanced();
+      });
+
+    </script>
+
+</body>
+</html>

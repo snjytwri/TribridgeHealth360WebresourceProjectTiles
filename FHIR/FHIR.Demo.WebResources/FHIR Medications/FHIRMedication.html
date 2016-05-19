@@ -1,0 +1,303 @@
+﻿<html><!-- Note: IE8 supports the content property only if a !DOCTYPE is specified. --><head>
+	<title>Techlister.com - jQuery Tree view without plugin</title>
+	<link href="../tri_css/SimpleTreeStyleAction.css" rel="stylesheet">
+    <link href="../tri_css/demostyles.css" rel="stylesheet" type="text/css"/>
+    <link href="../tri_css/kendo.common.min.css" rel="stylesheet" type="text/css" />
+    <!-- Enable the Kendo UI Style Sheet to be used below.. -->
+    <link href="../tri_css/kendo.default.min.css" rel="stylesheet" type="text/css" />
+
+	<!-- <script src="../tri_scripts/jquery.min.js" type="text/javascript"> </script> -->
+    <script src="../tri_scripts/jquery.v2.js" type="text/javascript"> </script>
+    <!--<script src="../tri_scripts/jquery.mobile.js" type="text/javascript"> </script> -->
+    <script src="../tri_scripts//kendo.all.min.js" type="text/javascript" ></script>
+    <script src="../ClientGlobalContext.js.aspx" type="text/javascript"></script>
+    <script src="../tri_scripts/SDK.REST.js" type="text/javascript"></script>
+    <script src="../tri_scripts/json2.js" type="text/javascript"></script>
+    <script src="../ms_XrmServiceToolkit.js" type="text/javascript"></script>
+    <script src="../tri_scripts/SOAPCalls.js"></script>
+    <script src="../tri_scripts/fhircommon.js"></script>
+
+	<script type="text/javascript">
+	    var FHIRURL = "https://navhealth.com/api/fhir" ;//"http://spark-dstu2.furore.com/fhir";
+	    var ActionNameRoot = "";
+	    var patientId = window.parent.Xrm.Page.getAttribute("tri_fhirid").getValue();  //"f001"; //"356849"; //
+	    var medOrder;
+	    var medsDataSource;
+
+	    $(document).on("mobileinit", function () {
+	        // Make your jQuery Mobile framework configuration changes here!
+	        $.mobile.allowCrossDomainPages = true;
+	        $.support.cors = true;
+	    });
+
+	    $(document).ready(function ($) {
+	        var context = GetGlobalContext();
+	        var clientOS = context.client.getClient();
+	        var formFactor = context.client.getFormFactor();
+	        //msgDiv.innerHTML = "Client: " + clientOS + "<br/>Factor: " + formFactor;
+	    });
+
+	    function errorHandlerFetch(textStatus) {
+	        msgDiv.innerHTML = "Error : " + textStatus + ": ";
+	    }
+
+	    function refreshMedications() {
+	        getFHIRFetch(patientId, FHIRSearch.MedicationStatement, buildFHIRMedicationStatements, errorHandlerFetch);
+	        //retrieveOrderandBuildGrid();
+	    }
+
+	    function buildFHIRMedicationStatements(req) {
+	        msgDiv.innerHTML = "";   //Returned : " + req.readyState + " : " + req.status;
+
+	        var resultXml = req.responseText;  // req.responseXML.xml;
+	        var jsonString = GetResponse(resultXml, "tri_results");
+	        //msgDiv.innerHTML += "<br/>Data : " + jsonString;
+	        if (jsonString != null && jsonString != "")
+	            var jsonOrders = JSON.parse(jsonString);
+	        if (jsonString != null && jsonString != "" && jsonOrders.entry != null) {
+	            var medOrders = [];
+	            var numberEntries = 0;
+	            numberEntries = jsonOrders.entry.length;
+	            //msgDiv.innerHTML += "<br/>Number : " + numberEntries;
+	            // Merge the two and do not allow duplicates
+	            for (var i = 0; i < numberEntries; i++) {
+	                var thisOrder = jsonOrders.entry[i].resource;
+	                medOrders[i] = new Object;
+	                medOrders[i].id = thisOrder.id;
+	                medOrders[i].status = thisOrder.status;
+
+	                try {
+	                    if (thisOrder.medicationReference != null && thisOrder.medicationReference.display != null)
+	                        medOrders[i].name = thisOrder.medicationReference.display;
+	                    else
+	                        medOrders[i].name = thisOrder.medicationCodeableConcept.text;
+	                }
+	                catch (e) { }
+
+	                try {
+	                    if (thisOrder.dosage[0] != null && thisOrder.dosage[0].text != null)
+	                        medOrders[i].dosage = fillStringField(thisOrder.dosage[0].text);
+	                }
+	                catch (e1) { }
+
+	                try {
+	                    if (thisOrder.dateAsserted != null)
+	                        medOrders[i].date = getDateFromString(thisOrder.dateAsserted);
+	                    else
+	                        medOrders[i].date = getDateFromString(thisOrder.meta.lastUpdated);
+	                }
+	                catch (e2) { }
+
+	                try {
+	                    if (thisOrder.wasNotTaken != null)
+	                        medOrders[i].taken = fillReverseBooleanField(thisOrder.wasNotTaken);
+	                }
+	                catch (e3) { }
+
+	                try {
+	                    if (thisOrder.note != null)
+	                        medOrders[i].note = fillStringField(thisOrder.note);
+	                }
+	                catch (e3) { }
+	            }
+	            if (medOrders.length > 0)
+	                medOrders.sort(sortOrdersByDate);
+	            processMedOrder(medOrders);
+	        }
+	        else {
+	            msgDiv.innerHTML += "<br/>Query did not return any results";
+	            if (jsonString != "")
+	                msgDiv.innerHTML += "<br/>" + jsonString;
+	        }
+	    }
+
+	    function processMedOrder(medOrder) {
+	        if (medOrder == null || (typeof medOrder == "string" && medOrder.substring(0, 5) == "ERROR")) {
+	            document.getElementById('medgrid').setAttribute('style', 'visibility:hidden');
+	            document.getElementById('nomeds').setAttribute('style', 'visibility:visible');
+	            document.getElementById('rowcountdiv').setAttribute('style', 'hidden');
+	            if (medOrder.substring(0, 5) == "ERROR")
+	                msgDiv.innerHTML += medOrder;
+	        } else {
+	            document.getElementById('medgrid').setAttribute('style', 'visibility:visible');
+	            document.getElementById('nomeds').setAttribute('style', 'visibility:hidden');
+	            document.getElementById('rowcountdiv').setAttribute('style', 'visibility:visible');
+	            var rowCountMsg = "Rows Returned: " + medOrder.length;
+	            document.getElementById('rowcountdiv').setAttribute('style', 'visibility:visible');
+	            document.getElementById('rowcountdiv').innerHTML = rowCountMsg;
+	            // Define Datasource for Grid
+	            medsDataSource = new kendo.data.DataSource({
+	                data: medOrder,
+	                pageSize: 4,
+	                schema: {
+	                    model: {
+	                        id: "id",
+	                        fields: {
+	                            id: { type: "string" },
+	                            status: { type: "string", editable: false },
+	                            name: { type: "string", editable: false },
+	                            dosage: { type: "string", editable: false },
+	                            taken: { type: "string", editable: false },
+	                            note: { type: "string", editable: false },
+	                            date: { type: "string", editable: false }
+	                        }
+	                    }
+	                }
+	            });
+	            var grid = $("#medgrid").data("kendoGrid");
+	            if (grid == null) {
+	                defineGrid();
+	                grid = $("#medgrid").data("kendoGrid");
+	            } else {
+	                grid.setDataSource(medsDataSource);
+	            }
+	        }
+	    }
+
+        // Original Demo function
+	    function retrieveOrderandBuildGrid() {
+	        medOrder = GetMedicationOrdersForPatient(FHIRURL, patientId, "");
+	        if (medOrder == null || (typeof medOrder == "string" && medOrder.substring(0,5) == "ERROR")) {
+	            document.getElementById('medgrid').setAttribute('style', 'visibility:hidden');
+	            document.getElementById('nomeds').setAttribute('style', 'visibility:visible');
+	            document.getElementById('rowcountdiv').setAttribute('style', 'hidden');
+	            if (medOrder.substring(0, 5) == "ERROR")
+	                msgDiv.innerHTML += medOrder;
+	        } else {
+	            document.getElementById('medgrid').setAttribute('style', 'visibility:visible');
+	            document.getElementById('nomeds').setAttribute('style', 'visibility:hidden');
+	            document.getElementById('rowcountdiv').setAttribute('style', 'visibility:visible');
+	            var rowCountMsg = "Rows Returned: " + medOrder.length;
+	            document.getElementById('rowcountdiv').setAttribute('style', 'visibility:visible');
+	            document.getElementById('rowcountdiv').innerHTML = rowCountMsg;
+	            // Define Datasource for Grid
+	            medsDataSource = new kendo.data.DataSource({
+	                data: medOrder,
+                    pageSize: 4,
+	                schema: {
+	                    model: {
+	                        id: "id",
+	                        fields: {
+	                            id: { type: "string" },
+	                            status: { type: "string", editable: false },
+	                            name: { type: "string", editable: false },
+	                            dosage: { type: "string", editable: false },
+	                            taken: { type: "string", editable: false },
+	                            note: { type: "string", editable: false },
+	                            date: { type: "string", editable: false }
+	                        }
+	                    }
+	                }
+	            });
+	            var grid = $("#medgrid").data("kendoGrid");
+	            if (grid == null) {
+	                defineGrid();
+	                grid = $("#medgrid").data("kendoGrid");
+	            } else {
+	                grid.setDataSource(medsDataSource);
+	            }
+	            
+                //// Show Scroll Bars if we have more than 4 rows
+	            //if (medOrder.length > 4) {
+	            //    $("#medgrid .k-grid-content").css({
+	            //        "overflow-y": "scroll"
+	            //    });
+	            //} else {
+	            //    $("#medgrid .k-grid-content").css({
+	            //        "overflow-y": "hidden"
+	            //    });
+	            //}
+
+	        }
+	    }
+
+	    function defineGrid() {
+
+	        $("#medgrid").kendoGrid({
+	            navigatable: true,
+	            sortable: true,
+	            pageable: false,
+	            scrollable: {
+	                virtual: true
+	            },
+	            selectable: "row",
+	            groupable: false,
+	            columns: [{
+	                field: "name",
+	                width: 200,
+	                title: "Name",
+	                filterable: true,
+	                sortable: true
+	            }, {
+	                field: "dosage",
+	                width: 200,
+	                title: "Dosage ",
+	                type: "string"
+	            }, {
+	                field: "taken",
+	                width: 100,
+	                title: "Taken?",
+	                type: "string"
+	            }, {
+	                field: "note",
+	                width: 200,
+	                title: "Note",
+	                type: "string"
+	            }, {
+	                field: "status",
+	                width: 100,
+	                title: "Status",
+	                type: "string"
+	            }, {
+	                field: "date",
+	                width: 150,
+	                title: "Date Written",
+	                type: "string",
+	            }
+	            ],
+	            dataSource: medsDataSource
+	        });
+	    }
+
+
+	</script>
+
+</head>
+<body>
+	
+<div>
+    <div id="controls">
+        <table style="width:inherit">
+            <tr>
+                <td id="buttontd" style="width:5%; vertical-align:top; text-align:left">
+                    <div>
+                        <button onclick="refreshMedications()">Refresh Medications</button>
+                    </div>
+                </td>
+                <td style="width:2%; vertical-align:top; text-align:left">&nbsp;</td>
+                <td style="width:93%; vertical-align:top; text-align:left">
+                    <div id="rowcountdiv"></div>
+                 </td>
+            </tr>
+            <tr>
+                <td colspan="3">&nbsp;</td>
+            </tr>
+            <tr>
+                <td id="gridtd" colspan="3">
+                    <div id="medgrid" style="margin: 0px; border: 0px; font-family: 'Segoe UI'; font-size: 80%; vertical-align:top; visibility:hidden;"></div>
+                    <div id="nomeds" style="margin: 0px; border: 0px; font-family: 'Segoe UI'; font-size: 100%; vertical-align:top; visibility:hidden;">
+                        <h4>No Medication Orders found</h4>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div id="msgDiv"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

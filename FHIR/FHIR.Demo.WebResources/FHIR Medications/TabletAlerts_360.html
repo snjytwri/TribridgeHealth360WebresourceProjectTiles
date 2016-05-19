@@ -1,0 +1,250 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>Patient Alerts</title>
+        <style>
+            html, body {
+              padding-top: 0;
+              padding-right: 0;
+              padding-bottom: 0;
+              padding-left: 0;
+              margin: 0;
+              font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+              font-weight: 100;
+            }
+            img {
+                margin-bottom: 25px;
+                margin-left: 3px;
+                margin-right: 3px;
+                margin-top: 5px;
+                float: left;
+                vertical-align: middle;
+                border: none;
+            }
+            span {
+                vertical-align: text-top;
+            }
+            a {
+                padding-top: 0;
+                padding-right: 0;
+                padding-bottom: 0;
+                padding-left: 0;
+            }
+        </style>
+    </head>
+    <script src="../ClientGlobalContext.js.aspx" type="text/javascript"></script>
+    <script src="../tri_scripts/jquery.min.js" type="text/javascript"> </script>	
+    <script src="../tri_scripts/json2.js" type="text/javascript"></script>
+    <script src="../tri_scripts/alertcommon.js"></script>
+    
+    <body>
+        <div id="alertdiv"></div>
+        <div id="msgDiv"></div>
+        <script type="text/javascript">
+            function getQueryVariable(variable) {
+                //This function is used to get a query variable bassed by the CRM IFRAME
+                var query = window.location.search.substring(1);
+                var vars = query.split("&");
+                for (var i = 0; i < vars.length; i++) {
+                    var pair = vars[i].split("=");
+                    if (pair[0] == variable) {
+                        return pair[1];
+                    }
+                }
+                return "";
+            }
+
+            function addImagetoHTML(sourceName, imageWidth, imageHeight,  spanText) {
+                var newHTML = "<tr><td>";
+                newHTML += "<img src='" + sourceName + "' style='visibility:visible; width=" + imageWidth + "; heigth=" + imageHeight + ";'>";
+                newHTML += "<span style='line-height:" + imageHeight + "px;'>&nbsp;" + spanText + "</span></td></tr>";
+                return newHTML;
+            }
+
+            function processAdvanceDirective(advanceInfo, textStatus, XmlHttpRequest) {
+                // Advance Directive
+                if (advanceInfo != null && advanceInfo.length > 0) {
+                    showHide = true;
+                    advDirTitle = "Review: " + advanceInfo[0].tri_name;
+                    adId = advanceInfo[0].tri_advancedirectiveId;
+                }
+                processResults();
+            }
+
+            function processVitalInfo(vitalsInfo, textStatus, XmlHttpRequest) {
+                if (typeof (vitalsInfo) != "undefined" && vitalsInfo != null && vitalsInfo.length > 0) {
+                    showHide = true;
+                    for (var i = 0; i < vitalsInfo.length; i++) {
+                        id1 = vitalsInfo[i].tri_ObservationIdentifier.Value;
+                        id2 = vitalsInfo[i].tri_ObservationIdentifier2.Value;
+                        id3 = vitalsInfo[i].tri_ObservationIdentifier3.Value;
+
+                        // Blood Pressure
+                        if (id1 == vitalObservation.systolic && systolic < 0) {
+                            systolic = vitalsInfo[i].tri_ObservationValue;
+                            bpId = vitalsInfo[i].tri_patientvitalsId;
+                        } else if (id2 == vitalObservation.systolic && systolic < 0) {
+                            systolic = vitalsInfo[i].tri_ObservationValue2;
+                            bpId = vitalsInfo[i].tri_patientvitalsId;
+                        } else if (id3 == vitalObservation.systolic && systolic < 0) {
+                            systolic = vitalsInfo[i].tri_ObservationValue3;
+                            bpId = vitalsInfo[i].tri_patientvitalsId;
+                        }
+
+                        if (id1 == vitalObservation.diastolic && diastolic < 0)
+                            diastolic = vitalsInfo[i].tri_ObservationValue;
+                        else if (id2 == vitalObservation.diastolic && diastolic < 0)
+                            diastolic = vitalsInfo[i].tri_ObservationValue2;
+                        else if (id3 == vitalObservation.diastolic && diastolic < 0)
+                            diastolic = vitalsInfo[i].tri_ObservationValue3;
+
+                        // Pulse
+                        if (id1 == vitalObservation.pulse && pulse < 0) {
+                            pulse = vitalsInfo[i].tri_ObservationValue;
+                            pulseId = vitalsInfo[i].tri_patientvitalsId;
+                        } else if (id2 == vitalObservation.pulse && pulse < 0) {
+                            pulse = vitalsInfo[i].tri_ObservationValue2;
+                            pulseId = vitalsInfo[i].tri_patientvitalsId;
+                        } else if (id3 == vitalObservation.pulse && pulse < 0) {
+                            pulse = vitalsInfo[i].tri_ObservationValue3;
+                            pulseId = vitalsInfo[i].tri_patientvitalsId;
+                        }
+                    }
+                }
+                processResults();
+            }
+
+            function processResults() {
+                var divHTML = "";
+
+                // Other Related Record logic
+                if (showHide == true) {
+                    if (systolic > 0 && diastolic > 0) {
+                        var altBP = systolic + " over " + diastolic;
+                        if (systolic >= 140 || diastolic >= 90) {
+                            divHTML += addImagetoHTML(sevbp, imageWidth, imageHeight, altBP);
+                        } else if (systolic > 120 && diastolic > 80) {
+                            divHTML += addImagetoHTML(modbp, imageWidth, imageHeight, altBP);
+                        }
+                    }
+
+                    if (pulse > 0) {
+                        var altPulse = "Rate: " + pulse;
+                        if (pulse >= 82) {
+                            divHTML += addImagetoHTML(sevpulse, imageWidth, imageHeight, altPulse);
+                        } else if (pulse >= 75) {
+                            divHTML += addImagetoHTML(modpulse, imageWidth, imageHeight, altPulse);
+                        }
+                    }
+
+                    if (advDirTitle != "") {
+                        divHTML += addImagetoHTML(advdir, imageWidth, imageHeight, advDirTitle);
+                    }
+                }
+
+                // Entity Related Fields
+                if (noShow != null && noShow == noShowRate.High) {
+                    divHTML += addImagetoHTML(noshow, imageWidth, imageHeight, "High Appointment no-show rate");
+                }
+
+                if (transIssues != null && transIssues == 1) {
+                    divHTML += addImagetoHTML(notrans, imageWidth, imageHeight, "No Transportation");
+                }
+
+                if (income != null && income == householdIncome.lessthan25000) {
+                    var incomeText = window.parent.Xrm.Page.getAttribute("tri_householdincome").getText();
+                    divHTML += addImagetoHTML(lowinc, imageWidth, imageHeight, incomeText);
+                }
+
+                if (education != null) {
+                    var educationText = window.parent.Xrm.Page.getAttribute("educationcode").getText();
+                    if (education == educationCode.someHS)
+                        divHTML += addImagetoHTML(noeduc, imageWidth, imageHeight, educationText);
+                    else if (education >= educationCode.Bachelor)
+                        divHTML += addImagetoHTML(univgrad, imageWidth, imageHeight, educationText);
+                }
+
+                if (divHTML != "") {
+                    alertdiv.innerHTML = "<table>" + divHTML + "</table>";
+                }
+
+            }
+
+            //var modbp = "../tri_health_indicators_BP_Moderate_72x72.png";
+            //var sevbp = "../tri_health_indicators_BP_Severe_72x72.png";
+            //var modpulse = "../tri_health_indicators_Pulse_Moderate_72x72.png"; 
+            //var sevpulse = "../tri_health_indicators_Pulse_Severe_72x72.png"; 
+            //var advdir = "../tri_health_indicators_Advanced_Directive_72x72.png";
+            //var noeduc = "../tri_health_indicators_No_Education_72x72.png";
+            //var univgrad = "../tri_health_indicators_University_Education_72x72.png";
+            //var lowinc = "../tri_health_indicators_Low_Income_72x72.png";
+            //var notrans = "../tri_health_indicators_No_Transportation_72x72.png";
+            var modbp = "../tri_health_indicators_BP_Moderate.png";
+            var sevbp = "../tri_health_indicators_BP_Severe.png";
+            var modpulse = "../tri_health_indicators_Pulse_Moderate.png";
+            var sevpulse = "../tri_health_indicators_Pulse_Severe.png";
+            var advdir = "../tri_health_indicators_Advanced_Directive.png";
+            var noeduc = "../tri_health_indicators_No_Education.png";
+            var univgrad = "../tri_health_indicators_University_Education.png";
+            var lowinc = "../tri_health_indicators_Low_Income.png";
+            var notrans = "../tri_health_indicators_No_Transportation.png";
+            var noshow = "../tri_health_indicators_Missed_Appointment.png";
+
+            var ODATA_ENDPOINT = "/XRMServices/2011/OrganizationData.svc";
+            var SOAP_ENDPOINT = "/XRMServices/2011/Organization.svc/web";
+            var imageHeight = 40;
+            var imageWidth = 40;
+
+            var showHide = false;
+            var pulse = -1;
+            var systolic = -1;
+            var diastolic = -1;
+            var advDirTitle = "";
+            var bpId = "", pulseId = "", adId = "";
+
+            try {
+                var context = GetGlobalContext();
+                var serverUrl = context.getClientUrl();
+                var userid = context.getUserId();
+
+                var ODATA_URL = serverUrl + ODATA_ENDPOINT;
+                var SOAP_URL = serverUrl + SOAP_ENDPOINT;
+
+                // Get ID for Parent
+                var crmentityid = getQueryVariable("id");
+                if (crmentityid != null && crmentityid != "") {
+                    crmentityid = crmentityid.replace("%7b", "");
+                    crmentityid = crmentityid.replace("%7d", "");
+                    crmentityid = crmentityid.replace("{", "");
+                    crmentityid = crmentityid.replace("}", "");
+                }
+                // Entity Related Values
+                msgDiv.innerText = "";
+                var education = window.parent.Xrm.Page.getAttribute("educationcode").getValue();
+                var income = window.parent.Xrm.Page.getAttribute("tri_householdincome").getValue();
+                var transIssues = window.parent.Xrm.Page.getAttribute("tri_transportationissues").getValue();
+                var noShow = window.parent.Xrm.Page.getAttribute("tri_noshowrate").getValue();
+
+                //var vitalsInfo = retrievePatientVitalsInfo(ODATA_URL, crmentityid);
+                retrievePatientVitalsInfoAsync(ODATA_URL, crmentityid, processVitalInfo, null);
+                //var lastModified = window.parent.Xrm.Page.getAttribute("modifiedon").getValue();
+                // var advanceInfo = retrieveAdvanceDirectiveInfoAsync(ODATA_URL, crmentityid, null); //lastModified);
+                retrieveAdvanceDirectiveInfoAsync(ODATA_URL, crmentityid, null, processAdvanceDirective, null); 
+                // Can be used if AD tab is expanded.
+                //var rows = window.parent.Xrm.Page.getControl("AdvanceDirectives").getGrid().getRows();
+                processResults();
+
+            }
+            catch (err) {
+                //Display Error....
+                msgDiv.innerText += "Load Script Error: " + err.message;
+            }
+
+
+            $(document).ready(function () {
+                     
+            });
+
+    </script>
+    </body>
+</html>

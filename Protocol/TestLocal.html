@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="./WebResources/triip_/ViewEditor/js/jquery.js" type="text/javascript"></script>
+    <script src="./WebResources/triip_/ViewEditor/js/kendo.js" type="text/javascript"></script>
+    <script src="./WebResources/triip_/ViewEditor/js/xrmconnector.js" type="text/javascript"></script>
+    <script src="./WebResources/triip_/ViewEditor/js/kendo.vieweditor.js" type="text/javascript"></script>
+</head>
+<body>
+    <div id="grid"></div>
+    <script>
+        $(document).ready(function () {
+            Tribridge.ViewEditor.Build('grid', 'contact', 'My Contacts', ['Lastname'], ['Firstname'], false);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+
+// Code used to alter the Sitemap to add the Customer Alerts to the menu.
+
+<Area Id="CC" ShowGroups="true" Title="Care Coordination" Description="Care Coordination" Icon="$webresource:tri_carecoordination128">
+<Group Id="MyWork" Title="Patient Information" Description="Care Cordination" ResourceId="Groups_MyWork" IsProfile="false">
+<SubArea Id="nav_dashboards" Icon="/_imgs/area/18_home.gif" DefaultDashboard="ed44ebba-994c-e311-b75b-0050568b4c09" GetStartedPanePathAdminOutlook="dashboards_outlook_admin_visor.htmp" GetStartedPanePathOutlook="dashboards_outlook_user_visor.htmp" GetStartedPanePathAdmin="dashboards_web_admin_visor.htmp" GetStartedPanePath="dashboards_web_user_visor.htmp" Url="/workplace/home_dashboards.aspx">
+<Titles>
+<Title LCID="1033" Title="Dashboards"/>
+</Titles>
+</SubArea>
+<SubArea Id="customeralert" Title="Customer Alerts" Description="Customer Alerts" Icon="/_imgs/area/18_home.gif" AvailableOffline="false" Url="$webresource:tri_/Tribridge.Tiles/TileMain.html" PassParams="false"/>
+<SubArea Id="tempId_635066393963189952" AvailableOffline="false" Client="All,Web" PassParams="false" Entity="contact"/>
+<SubArea Id="activitypointer" Entity="activitypointer"/>
+</Group>
+<Group Id="Clinical" Title="Clinical" IsProfile="false">
+<SubArea Id="tri_diagnosis" Entity="tri_diagnosis"/>
+<SubArea Id="tri_alert" Entity="tri_alert"/>
+<SubArea Id="tri_carefamily" Entity="tri_carefamily"/>
+</Group>
+<Group Id="Contracts" Title="Contracts" ResourceId="Group_Extensions" IsProfile="false">
+<SubArea Id="tri_payorcontractor" AvailableOffline="false" PassParams="false" Entity="tri_payorcontractor"/>
+<SubArea Id="tri_acocontract" Entity="tri_acocontract"/>
+</Group>
+<Group Id="physicianpractice" Title="Physician/Practice" IsProfile="false">
+<SubArea Id="tri_practice" Entity="tri_practice"/>
+<SubArea Id="tri_physician" Entity="tri_physician"/>
+<SubArea Id="nav_cases" GetStartedPanePathAdminOutlook="Cases_Outlook_Admin_Visor.html" GetStartedPanePathOutlook="Cases_Outlook_User_Visor.html" GetStartedPanePathAdmin="Cases_Web_Admin_Visor.html" GetStartedPanePath="Cases_Web_User_Visor.html" Entity="incident" DescriptionResourceId="Cases_SubArea_Description"/>
+</Group>
+</Area>

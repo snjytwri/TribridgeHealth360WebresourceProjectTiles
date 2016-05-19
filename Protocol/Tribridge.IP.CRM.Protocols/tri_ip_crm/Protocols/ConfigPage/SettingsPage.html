@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script type="text/javascript" src="../../ClientGlobalContext.js.aspx"></script>
+    <script type="text/javascript" src="./js/jquery.js"></script>
+    <script type="text/javascript" src="./js/kendo.js"></script>
+    <script type="text/javascript" src="./js/SDK.MetaData.js"></script>
+    <script type="text/javascript" src="./js/tribridge.helper.js"></script>
+    <script type="text/javascript" src="./js/kendo.configpage.js"></script>
+
+
+    <link rel="stylesheet" href="./css/kendo.common.min.css" type="text/css" />
+    <link rel="stylesheet" href="./css/kendo.rtl.min.css" type="text/css" />
+    <link rel="stylesheet" href="./css/kendo.silver.min.css" type="text/css" />
+    <link rel="stylesheet" href="./css/kendo.silver.mobile.min.css" type="text/css" />
+    <link rel="stylesheet" href="./css/kendo.dataviz.min.css" type="text/css" />
+    <link rel="stylesheet" href="./css/kendo.dataviz.silver.min.css" type="text/css" />
+
+    <link rel="stylesheet" href="./css/main.css" type="text/css" />
+
+    <script>
+        $(function () {
+            Tribridge.ViewEditor.Config.Init();
+        });
+    </script>
+    <style>
+        body
+        {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .mainHeader
+        {
+            border-bottom: #a5acb5 1px solid;
+            background-color: #eff2f6;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #000;
+            font-size: 18px;
+            font-weight: bold;
+            height: 36px;
+        }
+
+            .mainHeader > div
+            {
+                padding-top: 8px;
+            }
+
+        .secondHeader
+        {
+            border-bottom: #a5acb5 1px solid;
+            margin: 0px 15px;
+            color: #3b3b3b;
+            font-size: 14px;
+            font-weight: bold;
+            height: 32px;
+        }
+
+            .secondHeader > div
+            {
+                padding-top: 8px;
+            }
+
+        #options > div
+        {
+            margin-left: 20px;
+            margin-top: 15px;
+        }
+
+            #options > div > img
+            {
+                width: 64px;
+                height: 64px;
+            }
+
+            #options > div > a
+            {
+                vertical-align: top;
+                font-size: 17px;
+                font-weight: bold;
+                margin-left: 10px;
+                color: black;
+                text-decoration: none;
+            }
+
+        .list
+        {
+            float: left;
+        }
+
+            .list textarea
+            {
+                width: 500px;
+                height: 200px;
+            }
+
+        .buttons
+        {
+            float: left;
+            margin-left: 25px;
+        }
+
+        .k-button
+        {
+            height: 25px;
+            width: 100px;
+            margin: 5px 0px;
+        }
+
+        .clear
+        {
+            clear: both;
+        }
+
+        #configWindow, #fieldWindow
+        {
+            display: none;
+        }
+
+
+        /******************************************/
+        #tabstrip
+        {
+            margin: 30px auto;
+        }
+
+            #tabstrip h2
+            {
+                font-weight: lighter;
+                font-size: 5em;
+                padding: 0;
+                margin: 0;
+            }
+
+                #tabstrip h2 span
+                {
+                    background: none;
+                    padding-left: 5px;
+                    font-size: .5em;
+                    vertical-align: top;
+                }
+
+            #tabstrip p
+            {
+                margin: 0;
+                padding: 0;
+            }
+
+        .k-grid-content table tr td
+        {
+            white-space: nowrap;
+        }
+
+        #RO, #RF, #RV
+        {
+            width: 300px;
+            height: 200px;
+        }
+
+        .k-dropdown
+        {
+            width: 350px;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <header class="mainHeader">
+            <div>ViewEditor Configuration</div>
+        </header>
+        <div id="main">
+            <section>
+                <button id="btnNew" class="k-button"><span class="k-icon k-i-plus"></span>New</button>
+            </section>
+            <section>
+                <div id="configgrid"></div>
+            </section>
+            <section>
+
+                <input type="checkbox" id="MainGrid" />MainGrid
+                <input type="checkbox" id="SubGrid" />SubGrid
+                <input type="checkbox" id="DIR" />Disable Inactive Records
+                <input type="checkbox" id="EAS" />Enable Auto Save
+                <button id="btnSave" class="k-button"><span class="k-icon k-i-save"></span>Save</button>
+            </section>
+            <section>
+                <div id="tabstrip">
+                    <ul>
+                        <li class="k-state-active">Read Only Fields
+                        </li>
+                        <li>Required Fields
+                        </li>
+                        <li>Restricted Views
+                        </li>
+                    </ul>
+                    <div>
+                        <div class="list">
+                            <select id="RO" multiple="multiple" class="k-textbox"></select>
+                        </div>
+                        <div class="buttons">
+                            <button id="btnAddRO" class="k-button addField"><span class="k-icon k-i-plus"></span>Add Field</button>
+                            <br />
+                            <button id="btnRemoveRO" class="k-button removeField"><span class="k-icon k-i-close"></span>Remove Field</button>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div>
+                        <div class="list">
+                            <select id="RF" multiple="multiple" class="k-textbox"></select>
+                        </div>
+                        <div class="buttons">
+                            <button id="btnAddRF" class="k-button addField"><span class="k-icon k-i-plus"></span>Add Field</button>
+                            <br />
+                            <button id="btnRemoveRF" class="k-button removeField"><span class="k-icon k-i-close"></span>Remove Field</button>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div>
+                        <div class="list">
+                            <select id="RV" multiple="multiple" class="k-textbox"></select>
+                        </div>
+                        <div class="buttons">
+                            <button id="btnAddRV" class="k-button  addField"><span class="k-icon k-i-plus"></span>Add View</button>
+                            <br />
+                            <button id="btnRemoveRV" class="k-button removeField"><span class="k-icon k-i-close"></span>Remove View</button>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div id="configWindow">
+
+        <div id="windowContent">
+            <input id="entity" />
+        </div>
+        <br />
+        <button id="btnSaveEnt" class="k-button"><span class=""></span>Save Entity</button>
+        <button id="btnCancelEnt" class="k-button closeWindow"><span class=""></span>Close</button>
+    </div>
+
+    <div id="fieldWindow">
+        <div id="winContent">
+            <input id="attributes" />
+        </div>
+        <br />
+
+        <button id="btnAddAttr" class="k-button"><span class=""></span>Add</button>
+        <button id="btnCancelField" class="k-button closeWindow"><span class=""></span>Close</button>
+    </div>
+</body>
+</html>
